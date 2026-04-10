@@ -9,8 +9,8 @@ export class DeleteUserUseCase {
     private readonly loggingService: LoggingService,
   ) {}
 
-  public async execute(id: string): Promise<void> {
+  execute = async (id: string): Promise<void> => {
     this.loggingService.log('DeleteUserUseCase.execute');
     await this.userRepository.deleteUser(id);
-  }
+  };
 }

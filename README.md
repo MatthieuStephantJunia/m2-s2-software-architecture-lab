@@ -1,98 +1,227 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Software Architecture Lab API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST construite avec NestJS, TypeORM et SQLite.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Le projet expose des fonctionnalités autour de:
 
-## Description
+- l'authentification JWT
+- la gestion des utilisateurs
+- la gestion des posts
+- la gestion des tags
+- l'association de tags sur un post
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Stack
 
-## Project setup
+- Node.js
+- NestJS
+- TypeORM
+- SQLite
+- Swagger (OpenAPI)
+- Jest
+- Bruno (collection API)
 
-```bash
-$ npm install
-```
+## Prérequis
 
-## Compile and run the project
+- Node.js 20+
+- npm 10+
+
+## Installation
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+## Quickstart (5 etapes)
+
+1. Configurer l'environnement
+
+Copier `.env.example` vers `.env`, puis verifier les valeurs:
+
+```env
+PORT=3000
+DATABASE_URL=database.db
+NODE_ENV=development
+```
+
+2. Demarrer l'API
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+3. Initialiser les donnees de demo
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Dans un second terminal:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run seed
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+4. Obtenir un token JWT
 
-## Resources
+Exemple avec un utilisateur seed:
 
-Check out a few resources that may come in handy when working with NestJS:
+```http
+POST /auth/login
+Content-Type: application/json
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+{
+	"username": "writer_user",
+	"password": "password123"
+}
+```
 
-## Support
+5. Tester une route protegee
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Utiliser le token recu dans le header:
 
-## Stay in touch
+```http
+Authorization: Bearer <token>
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Exemple:
 
-## License
+```http
+POST /posts
+Content-Type: application/json
+Authorization: Bearer <token>
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+{
+	"title": "Mon premier post",
+	"content": "Contenu de test"
+}
+```
+
+## Configuration
+
+Créer un fichier `.env` à la racine (ou copier `.env.example`) avec:
+
+```env
+PORT=3000
+DATABASE_URL=database.db
+NODE_ENV=development
+```
+
+Notes:
+
+- `DATABASE_URL` doit pointer vers le fichier SQLite utilisé par l'application.
+- Le script de seed lit cette même variable.
+
+## Lancement
+
+```bash
+# démarrage standard
+npm run start
+
+# mode watch
+npm run start:dev
+
+# debug
+npm run start:debug
+
+# build production
+npm run build
+
+# exécution production
+npm run start:prod
+```
+
+## Initialisation des données (seed)
+
+```bash
+npm run seed
+```
+
+Ce script:
+
+- lit `seed.sql`
+- se connecte à la base configurée par `DATABASE_URL`
+- injecte les données de démonstration
+
+## Documentation API (Swagger)
+
+Une fois l'application lancée:
+
+- Swagger UI: `http://localhost:3000/api`
+
+## Endpoints principaux
+
+### Auth
+
+- `POST /auth/login`
+
+### Users
+
+- `GET /users`
+- `GET /users/:id`
+- `POST /users`
+- `PATCH /users/:id`
+- `DELETE /users/:id`
+
+### Posts
+
+- `GET /posts`
+- `GET /posts/:id`
+- `POST /posts`
+- `PATCH /posts/:id`
+- `DELETE /posts/:id`
+- `POST /posts/:postId/tags/:tagId`
+
+### Tags
+
+- `GET /tags`
+- `POST /tags`
+- `PATCH /tags/:id`
+- `DELETE /tags/:id`
+
+## Authentification
+
+- L'endpoint `POST /auth/login` retourne un token JWT.
+- Les routes marquées `ApiBearerAuth` dans Swagger nécessitent le header:
+
+```http
+Authorization: Bearer <token>
+```
+
+## Tests et qualité
+
+```bash
+# lint
+npm run lint
+
+# format
+npm run format
+
+# tests unitaires
+npm run test
+
+# tests e2e
+npm run test:e2e
+
+# couverture
+npm run test:cov
+```
+
+## Collection Bruno
+
+Une collection Bruno est disponible dans:
+
+- `bruno/software-architecture-lab`
+
+Vous pouvez l'importer dans Bruno pour tester rapidement les routes.
+
+## Structure du projet (résumé)
+
+- `src/modules/shared`: auth, database, logging, gestion d'erreurs
+- `src/modules/users`: domaine, use-cases, contrôleurs, persistance
+- `src/modules/posts`: domaine, use-cases, contrôleurs, persistance
+- `src/modules/tag`: domaine, use-cases, contrôleurs, persistance
+- `seed.js` / `seed.sql`: initialisation de la base
+
+## Remarques
+
+- Le schéma SQLite est synchronisé par TypeORM au démarrage (`synchronize: true`).
+- En environnement de production, il est recommandé de passer par des migrations.
+
+# En cas de port déjà occuper :
+# Get-NetTCPConnection -LocalPort 3000 | Select-Object -Expand OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force }

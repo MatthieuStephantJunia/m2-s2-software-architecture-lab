@@ -1,20 +1,42 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryColumn,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+} from 'typeorm';
 import type { PostStatus } from '../../domain/entities/post.entity';
+import { SQLiteTagEntity } from '../../../tag/infrastructure/entities/tag.sqlite.entity';
 
 @Entity('posts')
 export class SQLitePostEntity {
-  @PrimaryColumn()
-  id: string;
+  @PrimaryColumn('uuid')
+  id!: string;
+
+  @CreateDateColumn()
+  createdAt!: Date;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column()
-  content: string;
+  content!: string;
+
+  @Column({ type: 'text' })
+  status!: PostStatus;
 
   @Column()
-  status: PostStatus;
+  authorId!: string;
 
-  @Column()
-  authorId: string;
+  // Relation Many-to-Many avec les tags mode unidirectionnelle pour facilité le GET /posts - filter by tags.
+  @ManyToMany(() => SQLiteTagEntity, { cascade: true })
+  @JoinTable({
+    name: 'post_tags', // Le nom de la table de jointure qui sera créée dans SQLite
+    joinColumn: { name: 'postId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
+  })
+  tags!: SQLiteTagEntity[];
+  @Column({ type: 'text', unique: true, nullable: true })
+  slug!: string | null;
 }

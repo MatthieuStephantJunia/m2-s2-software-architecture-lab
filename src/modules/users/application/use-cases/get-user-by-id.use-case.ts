@@ -10,8 +10,8 @@ export class GetUserByIdUseCase {
     private readonly loggingService: LoggingService,
   ) {}
 
-  public async execute(id: string): Promise<UserEntity | undefined> {
+  execute = async (id: string): Promise<UserEntity | undefined> => {
     this.loggingService.log('GetUserByIdUseCase.execute');
     return this.userRepository.getUserById(id);
-  }
+  };
 }

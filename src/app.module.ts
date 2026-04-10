@@ -8,6 +8,8 @@ import { PostModule } from './modules/posts/post.module';
 import { AuthModule } from './modules/shared/auth/auth.module';
 import { DatabaseModule } from './modules/shared/database/database.module';
 import { UserModule } from './modules/users/user.module';
+import { TagsModule } from './modules/tag/tags.module';
+import { CommentModule } from './modules/comments/comment.module';
 
 @Module({
   imports: [
@@ -25,7 +27,9 @@ import { UserModule } from './modules/users/user.module';
     DatabaseModule,
     EventEmitterModule.forRoot(),
     PostModule,
+    CommentModule,
     UserModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

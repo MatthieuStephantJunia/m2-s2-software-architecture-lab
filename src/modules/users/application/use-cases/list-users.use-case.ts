@@ -10,8 +10,8 @@ export class ListUsersUseCase {
     private readonly loggingService: LoggingService,
   ) {}
 
-  public async execute(): Promise<UserEntity[]> {
+  execute = async (): Promise<UserEntity[]> => {
     this.loggingService.log('ListUsersUseCase.execute');
     return this.userRepository.listUsers();
-  }
+  };
 }

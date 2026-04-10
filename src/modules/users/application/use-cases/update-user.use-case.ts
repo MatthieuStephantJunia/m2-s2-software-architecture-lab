@@ -10,13 +10,13 @@ export class UpdateUserUseCase {
     private readonly loggingService: LoggingService,
   ) {}
 
-  public async execute(id: string, input: UpdateUserDto): Promise<void> {
+  execute = async (id: string, input: UpdateUserDto): Promise<void> => {
     this.loggingService.log('UpdateUserUseCase.execute');
     const user = await this.userRepository.getUserById(id);
 
     if (user) {
-      user.update(input.username, input.role);
+      user.update(input.username, input.email, input.role);
       await this.userRepository.updateUser(id, user);
     }
-  }
+  };
 }

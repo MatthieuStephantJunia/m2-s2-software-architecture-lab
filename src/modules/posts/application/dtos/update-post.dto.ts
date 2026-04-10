@@ -1,5 +1,4 @@
-export class UpdatePostDto {
-  title?: string;
+import { PartialType } from '@nestjs/swagger';
+import { CreatePostDto } from './create-post.dto';
 
-  content?: string;
-}
+export class UpdatePostDto extends PartialType(CreatePostDto) {}

@@ -7,8 +7,13 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 export class CreateUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
-  public async execute(input: CreateUserDto): Promise<void> {
-    const user = UserEntity.create(input.username, input.role, input.password);
+  execute = async (input: CreateUserDto): Promise<void> => {
+    const user = UserEntity.create(
+      input.username,
+      input.email,
+      input.role,
+      input.password,
+    );
     await this.userRepository.createUser(user);
-  }
+  };
 }

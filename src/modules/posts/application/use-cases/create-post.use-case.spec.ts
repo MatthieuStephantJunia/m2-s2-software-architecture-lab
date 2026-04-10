@@ -1,3 +1,4 @@
+/// <reference types="jest" /> //?
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   makeUserWithoutPermission,
@@ -6,21 +7,31 @@ import {
 import { PostCreatedEvent } from '../../domain/events/post-created.event';
 import { UserCannotCreatePostException } from '../../domain/exceptions/user-cannot-create-post.exception';
 import { PostRepository } from '../../domain/repositories/post.repository';
+import { TagRepository } from '../../../tag/repositories/tag.repository';
 import { CreatePostUseCase } from './create-post.use-case';
 
 describe('CreatePostUseCase', () => {
   let useCase: CreatePostUseCase;
   let postRepository: jest.Mocked<PostRepository>;
+  let tagRepository: jest.Mocked<TagRepository>;
   let eventEmitter: jest.Mocked<EventEmitter2>;
 
   beforeEach(() => {
     postRepository = {
-      createPost: jest.fn().mockResolvedValue(undefined),
+      save: jest.fn().mockResolvedValue(undefined),
+      existsBySlug: jest.fn().mockResolvedValue(false),
     } as unknown as jest.Mocked<PostRepository>;
+    tagRepository = {
+      findById: jest.fn().mockResolvedValue(null),
+    } as unknown as jest.Mocked<TagRepository>;
     eventEmitter = {
       emit: jest.fn(),
     } as unknown as jest.Mocked<EventEmitter2>;
-    useCase = new CreatePostUseCase(eventEmitter, postRepository);
+    useCase = new CreatePostUseCase(
+      eventEmitter,
+      postRepository,
+      tagRepository,
+    );
   });
 
   it('should create a post and emit an event when user has permission', async () => {
@@ -36,7 +47,7 @@ describe('CreatePostUseCase', () => {
     await useCase.execute(createPostDto, user);
 
     // Assert
-    expect(postRepository.createPost).toHaveBeenCalledTimes(1);
+    expect(postRepository.save).toHaveBeenCalledTimes(1);
     expect(eventEmitter.emit).toHaveBeenCalledWith(
       PostCreatedEvent,
       expect.objectContaining({ authorId: createPostDto.authorId }),
@@ -57,7 +68,7 @@ describe('CreatePostUseCase', () => {
 
     // Assert
     await expect(act).rejects.toThrow(UserCannotCreatePostException);
-    expect(postRepository.createPost).not.toHaveBeenCalled();
+    expect(postRepository.save).not.toHaveBeenCalled();
     expect(eventEmitter.emit).not.toHaveBeenCalled();
   });
 });

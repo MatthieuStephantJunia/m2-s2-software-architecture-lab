@@ -6,6 +6,7 @@ export type UserRole = 'user' | 'moderator' | 'admin' | 'writer';
 
 export class UserEntity {
   private _username: UserUsername;
+  private _email: string;
   private _role: UserRole;
   private _password: string;
   public readonly permissions: Permissions;
@@ -13,10 +14,12 @@ export class UserEntity {
   private constructor(
     readonly id: string,
     username: UserUsername,
+    email: string,
     role: UserRole,
     password: string,
   ) {
     this._username = username;
+    this._email = email;
     this._role = role;
     this._password = password;
 
@@ -25,10 +28,17 @@ export class UserEntity {
 
   public static create(
     username: string,
+    email: string,
     role: UserRole,
     password: string,
   ): UserEntity {
-    return new UserEntity(v4(), new UserUsername(username), role, password);
+    return new UserEntity(
+      v4(),
+      new UserUsername(username),
+      email,
+      role,
+      password,
+    );
   }
 
   public toJSON() {
@@ -36,13 +46,17 @@ export class UserEntity {
       id: this.id,
       role: this._role,
       username: this._username.toString(),
+      email: this._email,
       password: this._password,
     };
   }
 
-  public update(username?: string, role?: UserRole): void {
+  public update(username?: string, email?: string, role?: UserRole): void {
     if (username) {
       this._username = new UserUsername(username);
+    }
+    if (email) {
+      this._email = email;
     }
     if (role) {
       this._role = role;
@@ -53,6 +67,7 @@ export class UserEntity {
     return new UserEntity(
       input.id as string,
       new UserUsername(input.username as string),
+      input.email as string,
       input.role as UserRole,
       input.password as string,
     );
@@ -60,5 +75,9 @@ export class UserEntity {
 
   public checkPassword(password: string): boolean {
     return this._password === password;
+  }
+
+  public getRole(): UserRole {
+    return this._role;
   }
 }

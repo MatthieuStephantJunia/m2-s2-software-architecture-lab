@@ -12,7 +12,8 @@ export class PostPermissions {
   }
 
   public canUpdateContent(post: PostEntity): boolean {
-    return post.status === 'draft' && post.authorId === this.userId;
+    if (post.authorId === this.userId) return true;
+    return this.role === 'admin' || this.role === 'moderator';
   }
 
   public canReadPost(post: PostEntity): boolean {

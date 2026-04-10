@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { LoggingService } from '../../../shared/logging/domain/services/logging.service';
 import { PostRepository } from '../../domain/repositories/post.repository';
 import { UpdatePostDto } from '../dtos/update-post.dto';
+import { UserEntity } from '../../../users/domain/entities/user.entity';
+import { PostNotFoundException } from '../../domain/exceptions/post-not-found.exception';
+import { UserCannotUpdatePostException } from '../../domain/exceptions/user-cannot-update-post.exception';
 
 @Injectable()
 export class UpdatePostUseCase {
@@ -10,13 +13,23 @@ export class UpdatePostUseCase {
     private readonly loggingService: LoggingService,
   ) {}
 
-  public async execute(id: string, input: UpdatePostDto): Promise<void> {
+  execute = async (
+    id: string,
+    input: UpdatePostDto,
+    user: UserEntity,
+  ): Promise<void> => {
     this.loggingService.log('UpdatePostUseCase.execute');
     const post = await this.postRepository.getPostById(id);
 
-    if (post) {
-      post.update(input.title, input.content);
-      await this.postRepository.updatePost(id, post);
+    if (!post) {
+      throw new PostNotFoundException(id);
     }
-  }
+
+    if (!user.permissions.posts.canUpdateContent(post)) {
+      throw new UserCannotUpdatePostException();
+    }
+
+    post.update(input.title, input.content);
+    await this.postRepository.updatePost(id, post);
+  };
 }

@@ -13,6 +13,7 @@ export type CreatePostModel = {
   content: string;
   authorId: string;
   status: PostStatus;
+  slug?: string;
 };
 
 export type UpdatePostModel = Partial<CreatePostModel>;
@@ -24,6 +25,8 @@ export abstract class PostRepository {
     id: string,
   ): PostEntity | undefined | Promise<PostEntity | undefined>;
 
+  abstract findById(id: string): Promise<PostEntity | null>;
+
   public abstract createPost(input: PostEntity): void | Promise<void>;
 
   public abstract updatePost(
@@ -32,4 +35,9 @@ export abstract class PostRepository {
   ): void | Promise<void>;
 
   public abstract deletePost(id: string): void | Promise<void>;
+
+  public abstract save(post: PostEntity): Promise<void>;
+
+  public abstract getPostBySlug(slug: string): Promise<PostEntity | undefined>;
+  public abstract existsBySlug(slug: string): Promise<boolean>;
 }
